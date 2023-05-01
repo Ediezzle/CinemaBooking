@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Film extends Model
 {
@@ -13,9 +13,8 @@ class Film extends Model
     // public function getIsBookableAttribute(): bool
     // {
     //     $authUser = auth()->user();
-        
 
-    //     $isBookable = $this->schedules->count() > 0 
+    //     $isBookable = $this->schedules->count() > 0
     //         && $this->schedules->sum('seats_remaining') > 0;
 
     //     if ($authUser) {

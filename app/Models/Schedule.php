@@ -27,6 +27,7 @@ class Schedule extends Model
     {
         $numOfBookingsForSchedule = Booking::where('schedule_id', $this->id)
             ->sum('number_of_tickets');
+
         return intval(config('cinemabooking.max_num_of_seats_per_theatre') - $numOfBookingsForSchedule);
     }
 

@@ -3,8 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
-use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -42,7 +42,7 @@ class Handler extends ExceptionHandler
         $message = $exception->getMessage();
         if (! $exception instanceof CustomException ||
            $exception = new Exception('Something went wrong. Please try again or contact support.')) {
-        } 
+        }
 
         return parent::render($request, $exception);
     }

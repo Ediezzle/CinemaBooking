@@ -5,16 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Film;
 use App\Services\FilmService;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 
 class FilmController extends Controller
-{    
+{
     /**
-     *
      * @var FilmService
      */
     private $filmService;
-    
+
     public function __construct()
     {
         $this->filmService = new FilmService;
@@ -23,9 +21,9 @@ class FilmController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $component = $user ? 'Dashboard' : 'Welcome' ;
+        $component = $user ? 'Dashboard' : 'Welcome';
 
-        $relationsToEagerLoad = ['schedules' => function ($query)  {
+        $relationsToEagerLoad = ['schedules' => function ($query) {
             $query->where('starts_at', '>', now()->toDateTimeString());
         }];
 
@@ -45,7 +43,7 @@ class FilmController extends Controller
 
         return Inertia::render('Dashboard', [
             'films' => [$film],
-            'canRegister' => false
+            'canRegister' => false,
         ]);
     }
 }

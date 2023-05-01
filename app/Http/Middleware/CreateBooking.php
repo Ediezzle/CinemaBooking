@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use App\Models\Booking;
+use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,7 +22,7 @@ class CreateBooking
             ->where('schedule_id', $request->get('scheduleId'))
             ->exists();
 
-        if($userHasBooking) {
+        if ($userHasBooking) {
             return redirect()->back()->with('error', 'You already have a booking for this film and shedule');
         }
 

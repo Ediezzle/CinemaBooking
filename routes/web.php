@@ -1,10 +1,9 @@
 <?php
 
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Application;
-use App\Http\Controllers\FilmController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\FilmController;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,12 +17,12 @@ use App\Http\Controllers\BookingController;
 */
 
 Route::get(
-    '/', 
+    '/',
     [FilmController::class, 'index']
 )->name('films');
 
 Route::get(
-    '/films/{film}', 
+    '/films/{film}',
     [FilmController::class, 'show']
 )->name('showFilm');
 
@@ -36,32 +35,32 @@ Route::middleware([
 
     Route::name('bookings.')->prefix('bookings')->group(function () {
         Route::get(
-            '/upcoming', 
+            '/upcoming',
             [BookingController::class, 'upcoming']
         )->name('upcoming');
 
         Route::post(
-            '/create', 
+            '/create',
             [BookingController::class, 'store']
         )->name('saveBooking');
 
         Route::get(
-            '/past', 
+            '/past',
             [BookingController::class, 'past']
         )->name('past');
 
         Route::get(
-            '/cancelled', 
+            '/cancelled',
             [BookingController::class, 'cancelled']
         )->name('cancelled');
 
         Route::get(
-            '/create/{filmId}', 
+            '/create/{filmId}',
             [BookingController::class, 'create']
         )->name('create');
 
         Route::delete(
-            '/{booking}/cancel', 
+            '/{booking}/cancel',
             [BookingController::class, 'destroy']
         )->name('cancel');
     });

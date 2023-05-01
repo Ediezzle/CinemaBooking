@@ -3,26 +3,21 @@
 namespace App\Services;
 
 use App\Models\Film;
-use Xylis\FakerCinema\Provider\Movie;
-use Xylis\FakerCinema\Provider\Person;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
+use Xylis\FakerCinema\Provider\Movie;
+use Xylis\FakerCinema\Provider\Person;
 
 class FilmService
-{    
+{
     /**
      * getBookingsByCriteria
-     *
-     * @param int $id
-     * @param  array $relationsToEagerLoad
-     * 
-     * @return Film|null
      */
     public function getFilm(int $id, array $filters = [], array $relationsToEagerLoad = []): ?Film
     {
         $query = Film::findOrFail($id);
-        if(! empty($relationsToEagerLoad)) {
+        if (! empty($relationsToEagerLoad)) {
             $query = $query->with($relationsToEagerLoad);
         }
 
@@ -32,7 +27,7 @@ class FilmService
     public function getFilmForBooking(int $id)
     {
         $film = Film::whereId($id)
-            ->with(['schedules' => function($query){
+            ->with(['schedules' => function ($query) {
                 $query->where('starts_at', '>', now()->toDateTimeString())
                     // in case they are booking for someone else
                     // ->where(function($query){
@@ -45,19 +40,16 @@ class FilmService
                     ->with(['theatre.cinema']);
             }])
             ->first();
-            // filter out schedules that have no seats remaining
-            // commenting this out to cater for cases where one is booking for someone else
-            // ->filter(
-            //     fn($schedule) => $schedule->seats_remaining > 0
-            // );
-       
+        // filter out schedules that have no seats remaining
+        // commenting this out to cater for cases where one is booking for someone else
+        // ->filter(
+        //     fn($schedule) => $schedule->seats_remaining > 0
+        // );
+
         return $film;
     }
-    
+
     /**
-     * @param array $filters
-     * @param  array $relationsToEagerLoad
-     * 
      * @return Collection
      */
     public function getFilms(array $filters = [], array $relationsToEagerLoad = [], $onlyWithUpcomingSchedules = true)
@@ -69,7 +61,7 @@ class FilmService
             });
         }
 
-        if(! empty($relationsToEagerLoad)) {
+        if (! empty($relationsToEagerLoad)) {
             $query = $query->with($relationsToEagerLoad);
         }
 

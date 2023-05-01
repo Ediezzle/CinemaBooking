@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Film;
-use App\Models\Booking;
 use App\Models\Schedule;
 use Illuminate\Support\Carbon;
 
@@ -21,11 +20,12 @@ class ScheduleService
             'film_id' => $filmId,
             'theatre_id' => $theatreId,
         ])
-        ->where('starts_at', '>=', $startsAt->toDateTimeString())
-        ->exists();
+            ->where('starts_at', '>=', $startsAt->toDateTimeString())
+            ->exists();
 
         if ($scheduleExists) {
             $result['reason'] = 'Schedule already exists!';
+
             return $result;
         }
 
@@ -34,12 +34,12 @@ class ScheduleService
             'theatre_id' => $theatreId,
         ])->where('starts_at', '>=', $startsAt->toDateTimeString())->count();
 
-        if ($numOfFilmsForTheatre >= (int)config('cinemabooking.max_num_of_current_movies_per_theatre') ) {
+        if ($numOfFilmsForTheatre >= (int) config('cinemabooking.max_num_of_current_movies_per_theatre')) {
             return $result;
         }
-        
+
         // $checkOne = Schedule::where([
-        //     'theatre_id' => $theatreId, 
+        //     'theatre_id' => $theatreId,
         //     'starts_at' => $startsAt->toDateTimeString()
         // ])->count();
 
@@ -91,12 +91,12 @@ class ScheduleService
 
         $schedules = $query->get();
 
-        if($forBooking) {
-            $schedules = $schedules->filter(function($schedule){
+        if ($forBooking) {
+            $schedules = $schedules->filter(function ($schedule) {
                 return $schedule->seats_remaining > 0;
             });
         }
-       
+
         return $schedules;
     }
 }

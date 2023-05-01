@@ -3,17 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\DeleteBooking;
-use Exception;
-use Inertia\Inertia;
 use App\Models\Booking;
-use Illuminate\Http\Request;
-use App\Services\FilmService;
 use App\Services\BookingService;
+use App\Services\FilmService;
+use Exception;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class BookingController extends Controller
-{    
+{
     /**
-     *
      * @var BookingService
      */
     private $bookingService;
@@ -47,11 +46,11 @@ class BookingController extends Controller
     {
         $data = ['film' => (new FilmService)->getFilmForBooking(id: $filmId)];
 
-        if($request->has('status')) {
+        if ($request->has('status')) {
             $data['status'] = $request->status;
         }
 
-        if($request->has('message')) {
+        if ($request->has('message')) {
             $data['message'] = $request->message;
         }
 
@@ -71,15 +70,16 @@ class BookingController extends Controller
 
         } catch (Exception $e) {
             report($e);
+
             return redirect()->back()->with('notification', [
                 'status' => 'failure',
-                'message'=> 'Something went wrong! Please try again or contact support.',
+                'message' => 'Something went wrong! Please try again or contact support.',
             ]);
         }
 
         return to_route('bookings.upcoming')->with('notification', [
             'status' => 'success',
-            'message'=> 'Booking successful! Your Reference number is ' . $booking->reference_number,
+            'message' => 'Booking successful! Your Reference number is '.$booking->reference_number,
         ]);
     }
 
@@ -130,7 +130,7 @@ class BookingController extends Controller
     {
         $notification = [
             'status' => 'failure',
-            'message'=> 'Something went wrong! Please try again or contact support.'
+            'message' => 'Something went wrong! Please try again or contact support.',
         ];
 
         try {

@@ -33,7 +33,7 @@ return new class extends Migration
             $table->dropColumn('starring');
             $table->dropColumn('director');
             $table->dropColumn('starring');
-            
+
         });
     }
 };
