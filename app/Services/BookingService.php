@@ -47,32 +47,47 @@ class BookingService
 
       public function getBookings(array $filters = [])
       {
-        $bookings = Booking::query()
-            ->when(isset($filters['userId']), function ($query, $userId) {
-                $query->where('user_id', $userId);
-            })
-            ->when(isset($filters['status']), function ($query, $status) {
-                if ($status === 'upcoming') {
-                    $query->whereHas('schedule', function ($query) {
-                        $query->where('starts_at', '>', now()->toDateTimeString());
-                    });
-                } else if($status === 'past') {
-                    $query->whereHas('schedule', function ($query) {
-                        $query->where('starts_at', '<', now()->toDateTimeString());
-                    });
-                }
-            })
-            ->with(['schedule' => function ($query) {
+        $query = Booking::query();
+
+        if(isset($filters['userId'])) {
+            $query = $query->where('user_id', $filters['userId']);
+        }
+
+        if(isset($filters['status'])) {
+            if ($filters['status'] === 'upcoming') {
+                $query->whereHas('schedule', function ($query) {
+                    $query->where('starts_at', '>', now()->toDateTimeString());
+                });
+            } else if($filters['status'] === 'past') {
+                $query->whereHas('schedule', function ($query) {
+                    $query->where('starts_at', '<', now()->toDateTimeString());
+                });
+            }
+        }
+
+        if(isset($filters['status']) && $filters['status'] === 'cancelled'){
+            $query = $query->withTrashed();
+        }
+
+        $bookings = $query->with(['schedule' => function ($query) {
                 $query->with(['film', 'theatre' => function ($query) {
                     $query->with('cinema');
                 }]);
             }])
-            ->when(isset($filters['status']) && $filters['status'] === 'cancelled', function ($query) {
-                $query->withTrashed();
-            })
             ->orderBy('id', 'desc')
             ->get();
 
         return $bookings;
+      }
+      
+      /**
+       *
+       * @param  int|Booking $booking
+       * @return void
+       */
+      public function deleteBooking($booking)
+      {
+        $booking = $booking instanceof Booking ? $booking : Booking::find($booking);
+        $booking->delete();
       }
 }

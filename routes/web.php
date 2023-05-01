@@ -55,9 +55,9 @@ Route::middleware([
             [BookingController::class, 'create']
         )->name('create');
 
-        Route::delete(
-            '/{bookingId}/cancel', 
-            [BookingController::class, 'delete']
+        Route::get(
+            '/{booking}/cancel', 
+            [BookingController::class, 'destroy']
         )->name('cancel');
     });
 });

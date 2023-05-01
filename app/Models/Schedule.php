@@ -26,7 +26,7 @@ class Schedule extends Model
     public function getSeatsRemainingAttribute(): int
     {
         $numOfBookingsForSchedule = Booking::where('schedule_id', $this->id)
-            ->count();
+            ->sum('number_of_tickets');
         return intval(config('cinemabooking.max_num_of_seats_per_theatre') - $numOfBookingsForSchedule);
     }
 

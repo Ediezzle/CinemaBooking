@@ -2,27 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\DeleteBooking;
 use Exception;
-use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Booking;
-use App\Models\Schedule;
 use Illuminate\Http\Request;
 use App\Services\FilmService;
 use App\Services\BookingService;
 
 class BookingController extends Controller
-{
-    public function __construct()
+{    
+    /**
+     *
+     * @var BookingService
+     */
+    private $bookingService;
+
+    public function __construct(BookingService $bookingService)
     {
-        // $this->middleware(['auth', 'verified']);
+        $this->middleware(DeleteBooking::class)->only('destroy');
+        $this->bookingService = $bookingService;
     }
+
     /**
      * Display a listing of the resource.
      */
-    public function upcoming(BookingService $bookingService)
+    public function upcoming()
     {
-        $bookings = $bookingService->getBookings(filters: [
+        $bookings = $this->bookingService->getBookings(filters: [
             'userId' => auth()->user()->id,
             'status' => 'upcoming',
         ]);
@@ -53,18 +60,19 @@ class BookingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, BookingService $bookingService)
+    public function store(Request $request)
     {
         try {
-            $booking = $bookingService->makeBooking(
+            $booking = $this->bookingService->makeBooking(
                 scheduleId: $request->scheduleId,
                 numOfTickets: $request->numOfTickets,
             );
 
         } catch (Exception $e) {
+            report($e);
             return redirect()->back()->with('notification', [
                 'status' => 'failure',
-                'message'=> $e->getMessage(),
+                'message'=> 'Something went wrong! Please try again or contact support.',
             ]);
         }
 
@@ -101,8 +109,21 @@ class BookingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Booking $booking)
     {
-        //
+        $notification = [
+            'status' => 'failure',
+            'message'=> 'Something went wrong! Please try again or contact support.'
+        ];
+
+        try {
+            $this->bookingService->deleteBooking($booking);
+            $notification['status'] = 'success';
+            $notification['message'] = 'Booking deleted successfully!';
+        } catch (Exception $e) {
+            report($e);
+        }
+
+        return redirect()->back()->with('notification', $notification);
     }
 }

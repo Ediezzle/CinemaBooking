@@ -53,7 +53,7 @@ let isCancelable = computed(() => {
                 <div class="flex items-center mt-2.5 mb-5">
                     <p>Ref: {{ booking.reference_number }}</p>
                 </div>
-                <a  v-if="isCancelable" :href="route('bookings.cancel', {bookingId: booking.id})" class="text-white bg-red-400 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Cancel</a>
+                <a  v-if="isCancelable" :href="route('bookings.cancel', {booking: booking.id})" class="text-white bg-red-400 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Cancel</a>
        
             </div>
         </div>
