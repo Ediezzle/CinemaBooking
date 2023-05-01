@@ -22,6 +22,11 @@ Route::get(
     [FilmController::class, 'index']
 )->name('films');
 
+Route::get(
+    '/films/{film}', 
+    [FilmController::class, 'show']
+)->name('showFilm');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -42,12 +47,12 @@ Route::middleware([
 
         Route::get(
             '/past', 
-            [FilmController::class, 'index']
+            [BookingController::class, 'past']
         )->name('past');
 
         Route::get(
             '/cancelled', 
-            [FilmController::class, 'index']
+            [BookingController::class, 'cancelled']
         )->name('cancelled');
 
         Route::get(
@@ -55,7 +60,7 @@ Route::middleware([
             [BookingController::class, 'create']
         )->name('create');
 
-        Route::get(
+        Route::delete(
             '/{booking}/cancel', 
             [BookingController::class, 'destroy']
         )->name('cancel');

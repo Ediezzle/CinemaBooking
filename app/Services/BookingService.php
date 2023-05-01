@@ -54,19 +54,17 @@ class BookingService
         }
 
         if(isset($filters['status'])) {
-            if ($filters['status'] === 'upcoming') {
-                $query->whereHas('schedule', function ($query) {
-                    $query->where('starts_at', '>', now()->toDateTimeString());
+            if ($filters['status'] == 'upcoming') {
+                $query = $query->whereHas('schedule', function ($query) {
+                    $query->where('starts_at', '>=', now()->toDateTimeString());
                 });
-            } else if($filters['status'] === 'past') {
-                $query->whereHas('schedule', function ($query) {
+            } else if($filters['status'] == 'past') {
+                $query = $query->whereHas('schedule', function ($query) {
                     $query->where('starts_at', '<', now()->toDateTimeString());
                 });
+            } else if($filters['status'] == 'cancelled') {
+                $query = $query->onlyTrashed();
             }
-        }
-
-        if(isset($filters['status']) && $filters['status'] === 'cancelled'){
-            $query = $query->withTrashed();
         }
 
         $bookings = $query->with(['schedule' => function ($query) {

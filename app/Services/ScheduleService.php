@@ -77,7 +77,7 @@ class ScheduleService
         unset($filters['forBooking']);
 
         $query = Schedule::query()->where('film_id', $filmId)
-            ->where('starts_at', '>', now()->toDateString());
+            ->where('starts_at', '>=', now()->toDateString());
 
         if (! empty($filters)) {
             foreach ($filters as $filter) {

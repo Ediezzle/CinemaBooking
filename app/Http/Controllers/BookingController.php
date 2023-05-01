@@ -34,8 +34,9 @@ class BookingController extends Controller
             'status' => 'upcoming',
         ]);
 
-        return Inertia::render('Booking/UpcomingBookings', [
+        return Inertia::render('Booking/Bookings', [
             'bookings' => $bookings,
+            'status' => 'upcoming',
         ]);
     }
 
@@ -85,17 +86,33 @@ class BookingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function past()
     {
-        //
+        $bookings = $this->bookingService->getBookings(filters: [
+            'userId' => auth()->user()->id,
+            'status' => 'past',
+        ]);
+
+        return Inertia::render('Booking/Bookings', [
+            'bookings' => $bookings,
+            'status' => 'past',
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function cancelled()
     {
-        //
+        $bookings = $this->bookingService->getBookings(filters: [
+            'userId' => auth()->user()->id,
+            'status' => 'cancelled',
+        ]);
+
+        return Inertia::render('Booking/Bookings', [
+            'bookings' => $bookings,
+            'status' => 'cancelled',
+        ]);
     }
 
     /**

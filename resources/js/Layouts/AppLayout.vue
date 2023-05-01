@@ -50,7 +50,7 @@ const logout = () => {
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Currently Showing
+                                    Films
                                 </NavLink>
                                 <NavLink :href="route('bookings.upcoming')" :active="route().current('bookings.upcoming')">
                                     Upcoming Bookings
@@ -60,6 +60,9 @@ const logout = () => {
                                 </NavLink>
                                 <NavLink :href="route('bookings.cancelled')" :active="route().current('bookings.cancelled')">
                                     Cancelled Bookings
+                                </NavLink>
+                                <NavLink v-if="route().current('showFilm')" :href="route('bookings.cancelled')" :active="route().current('showFilm')">
+                                    Film Info
                                 </NavLink>
                             </div>
                         </div>
@@ -204,16 +207,20 @@ const logout = () => {
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Currently Showing
+                            Films
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('bookings.upcoming')" :active="route().current('bookings.upcoming')">
-                            Upcoming Movies
+                            Upcoming Bookings
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('bookings.past')" :active="route().current('bookings.past')">
                             Past Bookings
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('bookings.cancelled')" :active="route().current('bookings.cancelled')">
                             Cancelled Bookings
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink v-if="route().current('showFilm')" :href="route('bookings.cancelled')" :active="route().current('showFilm')">
+                            Film Info
                         </ResponsiveNavLink>
                     </div>
 

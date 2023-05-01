@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Models\Film;
-use App\Models\Schedule;
-use Illuminate\Support\Carbon;
 use Xylis\FakerCinema\Provider\Movie;
 use Xylis\FakerCinema\Provider\Person;
 use Illuminate\Support\Facades\Storage;
@@ -106,7 +104,7 @@ class FilmService
                 'starring' => implode(',', $faker->actors),
                 'genre' => $faker->movieGenre,
                 'duration' => $faker->runtime,
-                'cover_photo' => Storage::disk('cover-photos')->getConfig()['relative_path'].'/cover_'.$faker->unique()->numberBetween(1, 8).'_photo.jpeg',
+                'cover_photo' => '/'.Storage::disk('cover-photos')->getConfig()['relative_path'].'/cover_'.$faker->unique()->numberBetween(1, 8).'_photo.jpeg',
                 'rating' => $faker->numberBetween(1, 5),
             ]
         );

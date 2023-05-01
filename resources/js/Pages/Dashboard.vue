@@ -4,10 +4,7 @@ import Welcome from '@/Components/Welcome.vue';
 import  FilmPreview  from '../Components/FilmPreview.vue';
 
 defineProps({
-    isLoggedIn: Boolean,
     canRegister: Boolean,
-    laravelVersion: String,
-    phpVersion: String,
     films: Array,
 });
 </script>
