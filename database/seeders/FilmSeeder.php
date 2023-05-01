@@ -28,7 +28,7 @@ class FilmSeeder extends Seeder
                 'starring' => implode(',', $faker->actors),
                 'genre' => $faker->movieGenre,
                 'duration' => $faker->runtime,
-                'cover_photo' => '/'.Storage::disk('cover-photos')->getConfig()['relative_path'].'/cover_'.$i.'_photo.jpeg',
+                'cover_photo' => '/'.Storage::disk('cover-photos')->getConfig()['relative_path'].'/cover_'.$faker->numberBetween(1, 8).'_photo.jpeg',
                 'rating' => $faker->numberBetween(1, 5),
             ]
         );

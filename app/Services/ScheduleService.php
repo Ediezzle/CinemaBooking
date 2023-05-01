@@ -99,4 +99,9 @@ class ScheduleService
 
         return $schedules;
     }
+
+    public function createRandomSchedules()
+    {
+        
+    }
 }

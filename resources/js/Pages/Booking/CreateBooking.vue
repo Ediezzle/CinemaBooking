@@ -32,11 +32,9 @@ const numberRange = (end) => {
 const submit = () => {
     form.transform(data => ({
         ...data,
-        numberOfTickets: form.numberOfTickets,
-        filmId: props.film.id,
         scheduleId: form.scheduleId,
     })).post(route('bookings.saveBooking'), {
-        // onFinish: () => form.reset('password'),
+       
     });
 };
 </script>

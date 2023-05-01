@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -27,23 +26,5 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
-    }
-
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @throws Throwable
-     */
-    public function render($request, Throwable $exception)
-    {
-        $message = $exception->getMessage();
-        if (! $exception instanceof CustomException ||
-           $exception = new Exception('Something went wrong. Please try again or contact support.')) {
-        }
-
-        return parent::render($request, $exception);
     }
 }

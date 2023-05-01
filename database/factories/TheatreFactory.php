@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Film;
+use App\Models\Cinema;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +18,14 @@ class TheatreFactory extends Factory
      */
     public function definition(): array
     {
+        $cinema = Cinema::firstOrCreate([
+            'name' => 'Cinema One'
+        ]);
+
         return [
-            //
+            'name' => 'Theatre '.$this->faker->unixTime,
+            'cinema_id' => $cinema->id,
+            
         ];
     }
 }

@@ -35,6 +35,6 @@ class Booking extends Model
     {
         $startsAt = Carbon::parse($this->schedule->starts_at);
 
-        return (now() < $startsAt) && now()->diffInHours($startsAt) > 1;
+        return (now() < $startsAt) && (now()->diffInHours($startsAt) >= 1);
     }
 }

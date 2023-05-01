@@ -2,18 +2,25 @@
 
 namespace App\Services;
 
-use App\Exceptions\CustomException;
 use App\Models\Booking;
 use App\Models\Schedule;
+use App\Traits\StringHelper;
+use App\Exceptions\CustomException;
 
 class BookingService
 {
+    use StringHelper;
+
     public function makeBooking(int $scheduleId, int $numOfTickets)
     {
         $schedule = Schedule::find($scheduleId);
 
         if ($schedule->starts_at < now()->toDateTimeString()) {
             throw new CustomException('Cannot book a schedule that has already started.');
+        }
+
+        if ($schedule->seats_remaining < $numOfTickets) {
+            throw new CustomException('Cannot book more tickets than the number of seats remaining!');
         }
 
         $booking = Booking::create([
@@ -30,15 +37,10 @@ class BookingService
 
     private function generateReferenceNumber()
     {
-        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $referenceNumber = '';
 
-        for ($i = 0; $i < 8; $i++) {
-            $referenceNumber .= $characters[rand(0, strlen($characters) - 1)];
-        }
-
         while (Booking::where('reference_number', $referenceNumber)->exists()) {
-            $referenceNumber = $this->generateReferenceNumber();
+            $referenceNumber = $this->generateRandomAlphaNumericString(8);
         }
 
         return $referenceNumber;

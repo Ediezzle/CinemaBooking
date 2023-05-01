@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\DeleteBooking;
-use App\Models\Booking;
-use App\Services\BookingService;
-use App\Services\FilmService;
 use Exception;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Booking;
+use Illuminate\Http\Request;
+use App\Services\FilmService;
+use App\Services\BookingService;
+use App\Exceptions\CustomException;
+use App\Http\Middleware\DeleteBooking;
 
 class BookingController extends Controller
 {
@@ -68,12 +69,10 @@ class BookingController extends Controller
                 numOfTickets: $request->numOfTickets,
             );
 
-        } catch (Exception $e) {
-            report($e);
-
+        } catch (CustomException $e) {
             return redirect()->back()->with('notification', [
                 'status' => 'failure',
-                'message' => 'Something went wrong! Please try again or contact support.',
+                'message' => $e->getMessage(),
             ]);
         }
 
@@ -113,14 +112,6 @@ class BookingController extends Controller
             'bookings' => $bookings,
             'status' => 'cancelled',
         ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
     }
 
     /**
