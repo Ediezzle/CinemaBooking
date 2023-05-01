@@ -56,6 +56,14 @@ return [
             'throw' => false,
         ],
 
+        'cover-photos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/cover-photos'),
+            'url' => env('APP_URL').'/storage/cover-photos',
+            'relative_path' => 'storage/cover-photos',
+            'throw' => false,
+        ],
+
     ],
 
     /*

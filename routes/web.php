@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\FilmController;
+use App\Http\Controllers\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,21 +17,47 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::get(
+    '/', 
+    [FilmController::class, 'index']
+)->name('films');
 
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [FilmController::class, 'index'])->name('dashboard');
+
+    Route::name('bookings.')->prefix('bookings')->group(function () {
+        Route::get(
+            '/upcoming', 
+            [BookingController::class, 'upcoming']
+        )->name('upcoming');
+
+        Route::post(
+            '/create', 
+            [BookingController::class, 'store']
+        )->name('saveBooking');
+
+        Route::get(
+            '/past', 
+            [FilmController::class, 'index']
+        )->name('past');
+
+        Route::get(
+            '/cancelled', 
+            [FilmController::class, 'index']
+        )->name('cancelled');
+
+        Route::get(
+            '/create/{filmId}', 
+            [BookingController::class, 'create']
+        )->name('create');
+
+        Route::delete(
+            '/{bookingId}/cancel', 
+            [BookingController::class, 'delete']
+        )->name('cancel');
+    });
 });

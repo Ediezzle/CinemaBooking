@@ -1,22 +1,44 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
+import  FilmPreview  from '../Components/FilmPreview.vue';
+
+defineProps({
+    isLoggedIn: Boolean,
+    canRegister: Boolean,
+    laravelVersion: String,
+    phpVersion: String,
+    films: Array,
+});
 </script>
 
 <template>
-    <AppLayout title="Dashboard">
-        <template #header>
+    <AppLayout>
+        <template>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Dashboard
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <Welcome />
-                </div>
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-10 mt-5 mb-5 md:mt-10 md:mb-10">
+            <div v-for="film in films" :key="film.id">
+                <FilmPreview 
+                    :id="film.id" 
+                    :cover_photo="film.cover_photo" 
+                    :title="film.title" 
+                    :genre="film.genre" 
+                    :duration="film.duration" 
+                    :rating="film.rating" 
+                    :summary="film.summary"
+                    :schedules="film.schedules"
+                />
             </div>
         </div>
     </AppLayout>
 </template>
+
+<style>
+    body, html {
+        background-color: #f7fafc;
+    }
+</style>
