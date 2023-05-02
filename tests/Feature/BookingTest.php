@@ -9,11 +9,12 @@ use App\Models\Booking;
 use App\Models\Theatre;
 use App\Models\Schedule;
 use App\Providers\RouteServiceProvider;
+use App\Traits\StringHelper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BookingTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, StringHelper;
 
     public function setUp(): void
     {
@@ -57,7 +58,6 @@ class BookingTest extends TestCase
 
     public function test_authenticated_user_can_make_a_booking(): void
     {
-        $this->withoutExceptionHandling();
         $film = Film::factory()->create();
         $theatre = Theatre::factory()->create();
         $schedule = Schedule::factory()->create([
@@ -147,27 +147,11 @@ class BookingTest extends TestCase
         $response->assertStatus(200);
     }
 
+    // TODO: refactor code that creates a booking to avoid duplication 
     public function test_upcoming_booking_can_be_cancelled_up_to_an_hour_before(): void
     {
-        $film = Film::factory()->create();
-        $theatre = Theatre::factory()->create();
-        $schedule = Schedule::factory()->create([
-            'film_id' => $film->id,
-            'starts_at' => now()->addHours(2),
-            'theatre_id' => $theatre->id,
-        ]);
-
-        $this->actingAs(User::factory()->create());
-
-        $this->post('/bookings/create', [
-            'scheduleId' => $schedule->id,
-            'numOfTickets' => 1,
-        ]);
-
-        $this->assertIsArray(session()->get('notification'));
-        $this->assertEquals(session()->get('notification')['status'],'success');
-
-        $booking = Booking::orderBy('id', 'DESC')->first();
+        $booking = $this->createBooking(now()->addHours(2));
+        $this->actingAs($booking->user);
         $oldBookings = Booking::all()->count();
 
         $response = $this->delete('/bookings/'.$booking->id.'/cancel');
@@ -182,25 +166,10 @@ class BookingTest extends TestCase
 
     public function test_upcoming_booking_cannot_be_cancelled_an_hour_or_less_before_schedule(): void
     {
-        $film = Film::factory()->create();
-        $theatre = Theatre::factory()->create();
-        $schedule = Schedule::factory()->create([
-            'film_id' => $film->id,
-            'starts_at' => now()->addMinutes(15),
-            'theatre_id' => $theatre->id,
-        ]);
+        $booking = $this->createBooking(now()->addMinutes(15));
 
-        $this->actingAs(User::factory()->create());
+        $this->actingAs($booking->user);
 
-        $this->post('/bookings/create', [
-            'scheduleId' => $schedule->id,
-            'numOfTickets' => 1,
-        ]);
-
-        $this->assertIsArray(session()->get('notification'));
-        $this->assertEquals(session()->get('notification')['status'],'success');
-
-        $booking = Booking::orderBy('id', 'DESC')->first();
         $oldBookings = Booking::all()->count();
 
         $this->delete('/bookings/'.$booking->id.'/cancel');
@@ -214,25 +183,10 @@ class BookingTest extends TestCase
 
     public function test_user_cannot_cancel_others_bookings(): void
     {
-        $film = Film::factory()->create();
-        $theatre = Theatre::factory()->create();
-        $schedule = Schedule::factory()->create([
-            'film_id' => $film->id,
-            'starts_at' => now()->addMinutes(15),
-            'theatre_id' => $theatre->id,
-        ]);
+        $booking = $this->createBooking(now()->addMinutes(15));
 
-        $this->actingAs(User::factory()->create());
+        $this->actingAs($booking->user);
 
-        $this->post('/bookings/create', [
-            'scheduleId' => $schedule->id,
-            'numOfTickets' => 1,
-        ]);
-
-        $this->assertIsArray(session()->get('notification'));
-        $this->assertEquals(session()->get('notification')['status'],'success');
-
-        $booking = Booking::orderBy('id', 'DESC')->first();
         $oldBookings = Booking::all()->count();
 
         $this->actingAs(User::factory()->create());
@@ -244,4 +198,26 @@ class BookingTest extends TestCase
         $this->assertEquals(session()->get('notification')['status'],'failure');
         $this->assertEquals(session()->get('notification')['message'],'You are not authorized to delete this booking!');
     }
+
+    public function createBooking($scheduleStartTime = null): Booking
+    {
+        $film = Film::factory()->create();
+        $theatre = Theatre::factory()->create();
+        $schedule = Schedule::factory()->create([
+            'film_id' => $film->id,
+            'starts_at' => $scheduleStartTime ?? now()->addHours(2),
+            'theatre_id' => $theatre->id,
+        ]);
+
+        $booking = Booking::create([
+            'user_id' => User::factory()->create()->id,
+            'schedule_id' => $schedule->id,
+            'reference_number' => $this->generateRandomAlphaNumericString(8),
+            'number_of_tickets' => 1,
+        ]);
+
+        return $booking;
+    }
+
+    // TODO: assert number of seats can't exceed max allowed during booking
 }
