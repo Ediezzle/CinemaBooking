@@ -199,7 +199,7 @@ class BookingTest extends TestCase
         $this->assertEquals(session()->get('notification')['message'],'You are not authorized to delete this booking!');
     }
 
-    public function createBooking($scheduleStartTime = null): Booking
+    public function createBooking(string $scheduleStartTime = null, int $numOfSeats = 1): Booking
     {
         $film = Film::factory()->create();
         $theatre = Theatre::factory()->create();
@@ -213,11 +213,31 @@ class BookingTest extends TestCase
             'user_id' => User::factory()->create()->id,
             'schedule_id' => $schedule->id,
             'reference_number' => $this->generateRandomAlphaNumericString(8),
-            'number_of_tickets' => 1,
+            'number_of_tickets' => $numOfSeats,
         ]);
 
         return $booking;
     }
 
     // TODO: assert number of seats can't exceed max allowed during booking
+    public function test_user_cannot_make_more_bookings_than_seats_left_for_schedule()
+    {
+        $this->withoutExceptionHandling();
+        $booking = $this->createBooking(now()->addHours(2), 10);
+        $this->actingAs($booking->user);
+        $numOfBookings = config('cinemabooking.max_num_of_seats_per_theatre');
+        $oldNumOfBookings = Booking::all()->count();
+
+        $response = $this->post('/bookings/create', [
+            'scheduleId' => $booking->schedule->id,
+            'numOfTickets' => $numOfBookings,
+        ]);
+
+        $newNumOfBookings = Booking::all()->count();
+
+        $this->assertEquals($oldNumOfBookings, $newNumOfBookings);
+        $this->assertIsArray(session()->get('notification'));
+        $this->assertEquals(session()->get('notification')['status'],'failure');
+        $this->assertEquals(session()->get('notification')['message'],'Cannot book more tickets than the number of seats remaining!');
+    }
 }
