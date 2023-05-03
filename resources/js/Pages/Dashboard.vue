@@ -18,6 +18,11 @@ defineProps({
         </template>
 
         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-10 mt-5 mb-5 md:mt-10 md:mb-10">
+            <div v-if="films.length < 1">
+                <h2 class="font-semibold text-xl text-red-500 text-center mt-10">
+                    There are no films with upcoming schedules
+                </h2>
+            </div>
             <div v-for="film in films" :key="film.id">
                 <FilmPreview 
                     :id="film.id" 

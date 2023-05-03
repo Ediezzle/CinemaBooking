@@ -19,7 +19,7 @@ defineProps({
                 <template v-if="! $page.props.auth.user">
                     <Link 
                         :href="route('login')" 
-                        class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                        class="ml-4 font-semibold text-black focus:outline focus:outline-2 focus:rounded-sm hover:text-gray-500"
                     >
                         Log in
                     </Link>
@@ -27,7 +27,7 @@ defineProps({
                     <Link 
                         v-if="canRegister" 
                         :href="route('register')" 
-                        class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                        class="ml-4 font-semibold text-black focus:outline focus:outline-2 focus:rounded-sm hover:text-gray-500"
                     >
                         Register
                     </Link>
@@ -35,6 +35,11 @@ defineProps({
             </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-10 mt-5 mb-5 md:mt-10 md:mb-10">
+            <div v-if="films.length < 1">
+                <h2 class="font-semibold text-xl text-red-500 text-center mt-10">
+                    There are no films with upcoming schedules
+                </h2>
+            </div>
             <div v-for="film in films" :key="film.id">
                 <FilmPreview 
                     :id="film.id" 
