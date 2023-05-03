@@ -12,12 +12,22 @@ class FilmController extends Controller
      * @var FilmService
      */
     private $filmService;
-
+    
+    /**
+     * constructor
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->filmService = new FilmService;
     }
-
+    
+    /**
+     * List all films that have upcoming schedules
+     *
+     * @return Response
+     */
     public function index()
     {
         $user = auth()->user();
@@ -34,7 +44,14 @@ class FilmController extends Controller
             'canRegister' => $user ? false : true,
         ]);
     }
-
+    
+    /**
+     * Show a single film
+     *
+     * @param Film $film :: The film to show
+     * 
+     * @return Response
+     */
     public function show(Film $film)
     {
         $relationsToEagerLoad = ['schedules'];

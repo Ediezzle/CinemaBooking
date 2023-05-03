@@ -10,11 +10,17 @@ use Xylis\FakerCinema\Provider\Movie;
 use Xylis\FakerCinema\Provider\Person;
 
 class FilmService
-{
+{    
     /**
-     * getBookingsByCriteria
+     * getFilm
+     *
+     * @param int $id
+     * @param array $filters
+     * @param array $relationsToEagerLoad
+     * 
+     * @return Film
      */
-    public function getFilm(int $id, array $filters = [], array $relationsToEagerLoad = []): ?Film
+    public function getFilm(int $id, array $filters = [], array $relationsToEagerLoad = [])
     {
         $query = Film::findOrFail($id);
         if (! empty($relationsToEagerLoad)) {
@@ -23,13 +29,19 @@ class FilmService
 
         return $query->first();
     }
-
+    
+    /**
+     *
+     * @param int $id
+     * 
+     * @return Film
+     */
     public function getFilmForBooking(int $id)
     {
-        $film = Film::whereId($id)
+        $film = Film::query()
             ->with(['schedules' => function ($query) {
                 $query->where('starts_at', '>', now()->toDateTimeString())
-                    // in case they are booking for someone else
+                    // in case they are booking for someone else, we don't want to filter out schedules that the user has already booked
                     // ->where(function($query){
                     //     $query->whereDoesntHave('bookings')
                     //     // filter out schedules that the user has already booked
@@ -39,9 +51,9 @@ class FilmService
                     // })
                     ->with(['theatre.cinema']);
             }])
-            ->first();
+            ->findOrFail($id);
         // filter out schedules that have no seats remaining
-        // commenting this out to cater for cases where one is booking for someone else
+        // commenting this out to cater for cases where one is booking for someone else. Left it here for reference
         // ->filter(
         //     fn($schedule) => $schedule->seats_remaining > 0
         // );
@@ -49,10 +61,17 @@ class FilmService
         return $film;
     }
 
+       
     /**
+     * getFilms
+     *
+     * @param array $filters
+     * @param array $relationsToEagerLoad
+     * @param bool $onlyWithUpcomingSchedules
+     * 
      * @return Collection
      */
-    public function getFilms(array $filters = [], array $relationsToEagerLoad = [], $onlyWithUpcomingSchedules = true)
+    public function getFilms(array $filters = [], array $relationsToEagerLoad = [], bool $onlyWithUpcomingSchedules = true)
     {
         $query = Film::query();
         if ($onlyWithUpcomingSchedules) {
@@ -71,8 +90,15 @@ class FilmService
 
         return $query->get();
     }
-
-    protected function applyFilters(Builder $query, $filters): Builder
+    
+    /**
+     *
+     * @param Builder $query
+     * @param array $filters
+     * 
+     * @return Builder
+     */
+    protected function applyFilters(Builder $query, array $filters)
     {
         foreach ($filters as $filter) {
             $query = $query->where($filter['column'], $filter['operator'], $filter['value']);
@@ -80,8 +106,15 @@ class FilmService
 
         return $query;
     }
-
-    public function generateRandomFilms(int $numOfFilms): Collection
+    
+    /**
+     * generateRandomFilms
+     *
+     * @param int $numOfFilms
+     * 
+     * @return Collection
+     */
+    public function generateRandomFilms(int $numOfFilms)
     {
         $faker = \Faker\Factory::create();
         $faker->addProvider(new Movie($faker));

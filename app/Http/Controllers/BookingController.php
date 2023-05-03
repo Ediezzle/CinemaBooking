@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Inertia\Inertia;
+use Inertia\Response;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Services\FilmService;
 use App\Services\BookingService;
 use App\Exceptions\CustomException;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Middleware\DeleteBooking;
 
 class BookingController extends Controller
@@ -17,7 +19,14 @@ class BookingController extends Controller
      * @var BookingService
      */
     private $bookingService;
-
+    
+    /**
+     * constructor
+     *
+     * @param BookingService $bookingService
+     * 
+     * @return void
+     */
     public function __construct(BookingService $bookingService)
     {
         $this->middleware(DeleteBooking::class)->only('destroy');
@@ -25,7 +34,9 @@ class BookingController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a list of upcoming bookings
+     * 
+     * @return Response
      */
     public function upcoming()
     {
@@ -41,7 +52,12 @@ class BookingController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for making a new booking
+     * 
+     * @param Request 
+     * @param int $filmId :: The id of the film to book
+     * 
+     * @return Response
      */
     public function create(Request $request, int $filmId)
     {
@@ -59,11 +75,19 @@ class BookingController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Save a new booking
+     * 
+     * @param Request $request
+     * 
+     * @return RedirectResponse
      */
     public function store(Request $request)
     {
         try {
+            $this->validate($request, [
+                'scheduleId' => 'required|exists:schedules,id|integer|gte:1',
+                'numOfTickets' => 'required|integer|min:1',
+            ]);
             $booking = $this->bookingService->makeBooking(
                 scheduleId: $request->scheduleId,
                 numOfTickets: $request->numOfTickets,
@@ -83,7 +107,9 @@ class BookingController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * List past bookings
+     * 
+     * @return Response
      */
     public function past()
     {
@@ -99,7 +125,9 @@ class BookingController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * List cancelled bookings
+     * 
+     * @return Response
      */
     public function cancelled()
     {
@@ -115,22 +143,18 @@ class BookingController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Cancel a booking
+     * 
+     * @param Booking $booking :: The booking to be cancelled
      */
     public function destroy(Booking $booking)
     {
-        $notification = [
-            'status' => 'failure',
-            'message' => 'Something went wrong! Please try again or contact support.',
-        ];
+        $this->bookingService->deleteBooking($booking);
 
-        try {
-            $this->bookingService->deleteBooking($booking);
-            $notification['status'] = 'success';
-            $notification['message'] = 'Booking deleted successfully!';
-        } catch (Exception $e) {
-            report($e);
-        }
+        $notification = [
+            'status' => 'success',
+            'message' => 'Booking cancelled successfully!'
+        ];
 
         return redirect()->back()->with('notification', $notification);
     }

@@ -311,10 +311,10 @@ const logout = () => {
             <!-- Page Content -->
             <main>
                 <div v-if="$page.props.flash.notification" class="alert mt-10">
-                    <div v-if="$page.props.flash.notification.status === 'failure'" class="p-4 mb-4 text-sm text-white rounded-lg bg-red-400 text-center ml-5 mr-5" role="alert">
+                    <div v-if="$page.props.flash.notification.status === 'failure'" class="p-4 mb-4 text-sm text-white rounded-lg bg-red-600 text-center ml-5 mr-5" role="alert">
                         <span class="font-medium">{{ $page.props.flash.notification.message }}</span>
                     </div>
-                    <div v-else class="p-4 mb-4 text-sm text-white rounded-lg bg-green-400 text-center ml-5 mr-5" role="alert">
+                    <div v-else class="p-4 mb-4 text-sm text-white rounded-lg bg-green-600 text-center ml-5 mr-5" role="alert">
                         <span class="font-medium">{{ $page.props.flash.notification.message }}</span>
                     </div>
                 </div>

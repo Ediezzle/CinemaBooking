@@ -49,7 +49,7 @@ const submit = () => {
         <div class="grid grid-cols-3 gap-8">
             <div v-for="schedule in film.schedules" :key="schedule.id" class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ml-10 mt-10">
                 <a href="#">
-                    <!-- <img class="rounded-t-lg" :src="film.cover_photo" alt="here" /> -->
+                    <img class="rounded-t-lg" :src="film.cover_photo" alt="here" />
                 </a>
                 <form @submit.prevent="submit">
                     <div class="p-5">

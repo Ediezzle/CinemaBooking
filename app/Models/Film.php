@@ -10,20 +10,22 @@ class Film extends Model
 {
     use HasFactory;
 
-    // public function getIsBookableAttribute(): bool
-    // {
-    //     $authUser = auth()->user();
+    protected $appends = ['is_bookable'];
+    
+    public function getIsBookableAttribute(): bool
+    {   
+        $schedules = $this->schedules()
+            ->with('theatre')
+            ->withCount('bookings')
+            ->where('starts_at', '>', now())
+            ->get()
+            ->filter(function($schedule){
+                return ($schedule->seats_remaining > 0) 
+                    && ($schedule->bookings_count < config('cinemabooking.max_num_of_seats_per_theatre'));
+            });
 
-    //     $isBookable = $this->schedules->count() > 0
-    //         && $this->schedules->sum('seats_remaining') > 0;
-
-    //     if ($authUser) {
-    //         $userHasBooked = $authUser?->bookings()
-    //             ->where('film_id', $this->id)
-    //             ->count() > 0;
-    //         $isBookable = $isBookable && ! $userHasBooked;
-    //     }
-    // }
+        return $schedules->count() > 0;
+    }
 
     public function schedules(): HasMany
     {

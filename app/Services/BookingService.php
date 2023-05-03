@@ -10,7 +10,14 @@ use App\Exceptions\CustomException;
 class BookingService
 {
     use StringHelper;
-
+    
+    /**
+     *
+     * @param int $scheduleId
+     * @param int $numOfTickets
+     * 
+     * @return Booking
+     */
     public function makeBooking(int $scheduleId, int $numOfTickets)
     {
         $schedule = Schedule::find($scheduleId);
@@ -34,7 +41,11 @@ class BookingService
 
         return $booking;
     }
-
+    
+    /**
+     *
+     * @return string
+     */
     private function generateReferenceNumber()
     {
         $referenceNumber = '';
@@ -81,6 +92,7 @@ class BookingService
 
       /**
        * @param  int|Booking  $booking
+       * 
        * @return void
        */
       public function deleteBooking($booking)

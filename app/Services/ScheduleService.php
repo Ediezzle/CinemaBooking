@@ -2,13 +2,20 @@
 
 namespace App\Services;
 
-use App\Models\Film;
 use App\Models\Schedule;
 use Illuminate\Support\Carbon;
 
 class ScheduleService
-{
-    public function createSchedule(int $filmId, Carbon $startsAt, int $theatreId): array
+{    
+    /**
+     *
+     * @param mixed $filmId
+     * @param Carbon $startsAt
+     * @param int $theatreId
+     * 
+     * @return array
+     */
+    public function createSchedule(int $filmId, Carbon $startsAt, int $theatreId)
     {
         $result = [
             'status' => 'failure',
@@ -29,7 +36,7 @@ class ScheduleService
             return $result;
         }
 
-        //check if theatre doesn't already have 2 films for the current day that haven't yet started
+        // check if theatre doesn't already have 2 films for the current day that haven't yet started
         $numOfFilmsForTheatre = Schedule::where([
             'theatre_id' => $theatreId,
         ])->where('starts_at', '>=', $startsAt->toDateTimeString())->count();
@@ -37,26 +44,6 @@ class ScheduleService
         if ($numOfFilmsForTheatre >= (int) config('cinemabooking.max_num_of_current_movies_per_theatre')) {
             return $result;
         }
-
-        // $checkOne = Schedule::where([
-        //     'theatre_id' => $theatreId,
-        //     'starts_at' => $startsAt->toDateTimeString()
-        // ])->count();
-
-        // if ($checkOne >= 1) {
-        //     $result['reason'] = 'Theatre with id '.$theatreId.' already has a film at the same time!';
-        //     return $result;
-        // }
-
-        // $checkTwo = Schedule::where('theatre_id', $theatreId)
-        //     ->where('film_id', $filmId)
-        //     ->whereDate('starts_at', $startsAt->toDateString())
-        //     ->count();
-
-        // if ($checkTwo >= 1) {
-        //     $result['reason'] = 'Theatre with id '.$theatreId.' is already showing the same film on the same day!';
-        //     return $result;
-        // }
 
         $schedule = Schedule::create([
             'film_id' => $filmId,
@@ -66,7 +53,15 @@ class ScheduleService
 
         return ['status' => 'success', 'schedule' => $schedule, 'reason' => ''];
     }
-
+    
+    /**
+     *
+     * @param int $filmId
+     * @param array $relationsToEagerLoad
+     * @param array $filters
+     * 
+     * @return Collection
+     */
     public function getUpcomingSchedulesForFilm(int $filmId, array $relationsToEagerLoad = [], array $filters = [])
     {
         $forBooking = false;
@@ -98,10 +93,5 @@ class ScheduleService
         }
 
         return $schedules;
-    }
-
-    public function createRandomSchedules()
-    {
-        
     }
 }

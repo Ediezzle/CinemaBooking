@@ -53,6 +53,7 @@ defineProps({
                     :rating="film.rating" 
                     :summary="film.summary"
                     :schedules="film.schedules"
+                    :is_bookable="film.is_bookable"
                 />
             </div>
         </div>
