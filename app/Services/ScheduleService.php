@@ -6,13 +6,9 @@ use App\Models\Schedule;
 use Illuminate\Support\Carbon;
 
 class ScheduleService
-{    
+{
     /**
-     *
-     * @param mixed $filmId
-     * @param Carbon $startsAt
-     * @param int $theatreId
-     * 
+     * @param  mixed  $filmId
      * @return array
      */
     public function createSchedule(int $filmId, Carbon $startsAt, int $theatreId)
@@ -53,13 +49,8 @@ class ScheduleService
 
         return ['status' => 'success', 'schedule' => $schedule, 'reason' => ''];
     }
-    
+
     /**
-     *
-     * @param int $filmId
-     * @param array $relationsToEagerLoad
-     * @param array $filters
-     * 
      * @return Collection
      */
     public function getUpcomingSchedulesForFilm(int $filmId, array $relationsToEagerLoad = [], array $filters = [])

@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
     }
 
     public function boot()
-    { 
+    {
         Inertia::share([
             'errors' => function () {
                 return Session::get('errors')

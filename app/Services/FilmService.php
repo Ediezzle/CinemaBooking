@@ -10,14 +10,11 @@ use Xylis\FakerCinema\Provider\Movie;
 use Xylis\FakerCinema\Provider\Person;
 
 class FilmService
-{    
+{
     /**
      * getFilm
      *
-     * @param int $id
-     * @param array $filters
-     * @param array $relationsToEagerLoad
-     * 
+     *
      * @return Film
      */
     public function getFilm(int $id, array $filters = [], array $relationsToEagerLoad = [])
@@ -29,11 +26,8 @@ class FilmService
 
         return $query->first();
     }
-    
+
     /**
-     *
-     * @param int $id
-     * 
      * @return Film
      */
     public function getFilmForBooking(int $id)
@@ -61,14 +55,10 @@ class FilmService
         return $film;
     }
 
-       
     /**
      * getFilms
      *
-     * @param array $filters
-     * @param array $relationsToEagerLoad
-     * @param bool $onlyWithUpcomingSchedules
-     * 
+     *
      * @return Collection
      */
     public function getFilms(array $filters = [], array $relationsToEagerLoad = [], bool $onlyWithUpcomingSchedules = true)
@@ -90,12 +80,8 @@ class FilmService
 
         return $query->get();
     }
-    
+
     /**
-     *
-     * @param Builder $query
-     * @param array $filters
-     * 
      * @return Builder
      */
     protected function applyFilters(Builder $query, array $filters)
@@ -106,12 +92,11 @@ class FilmService
 
         return $query;
     }
-    
+
     /**
      * generateRandomFilms
      *
-     * @param int $numOfFilms
-     * 
+     *
      * @return Collection
      */
     public function generateRandomFilms(int $numOfFilms)

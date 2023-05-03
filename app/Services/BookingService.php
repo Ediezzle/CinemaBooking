@@ -2,20 +2,16 @@
 
 namespace App\Services;
 
+use App\Exceptions\CustomException;
 use App\Models\Booking;
 use App\Models\Schedule;
 use App\Traits\StringHelper;
-use App\Exceptions\CustomException;
 
 class BookingService
 {
     use StringHelper;
-    
+
     /**
-     *
-     * @param int $scheduleId
-     * @param int $numOfTickets
-     * 
      * @return Booking
      */
     public function makeBooking(int $scheduleId, int $numOfTickets)
@@ -41,9 +37,8 @@ class BookingService
 
         return $booking;
     }
-    
+
     /**
-     *
      * @return string
      */
     private function generateReferenceNumber()
@@ -92,7 +87,6 @@ class BookingService
 
       /**
        * @param  int|Booking  $booking
-       * 
        * @return void
        */
       public function deleteBooking($booking)

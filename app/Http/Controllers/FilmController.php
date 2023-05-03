@@ -12,7 +12,7 @@ class FilmController extends Controller
      * @var FilmService
      */
     private $filmService;
-    
+
     /**
      * constructor
      *
@@ -22,7 +22,7 @@ class FilmController extends Controller
     {
         $this->filmService = new FilmService;
     }
-    
+
     /**
      * List all films that have upcoming schedules
      *
@@ -44,12 +44,11 @@ class FilmController extends Controller
             'canRegister' => $user ? false : true,
         ]);
     }
-    
+
     /**
      * Show a single film
      *
-     * @param Film $film :: The film to show
-     * 
+     * @param  Film  $film :: The film to show
      * @return Response
      */
     public function show(Film $film)

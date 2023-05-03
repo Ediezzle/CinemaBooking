@@ -12,6 +12,7 @@ trait StringHelper
         for ($i = 0; $i < $length; $i++) {
             $randomAlphaNumericString .= $characters[rand(0, $charactersLength - 1)];
         }
+
         return $randomAlphaNumericString;
     }
 }

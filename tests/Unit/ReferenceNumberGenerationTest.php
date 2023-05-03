@@ -14,7 +14,7 @@ class ReferenceNumberGenerationTest extends TestCase
      */
     public function test_reference_number_generated_matches_expected_number_of_digits(): void
     {
-        for($i=0; $i<10; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $refNumber = $this->generateRandomAlphaNumericString(8);
             $this->assertEquals(8, strlen($refNumber));
 

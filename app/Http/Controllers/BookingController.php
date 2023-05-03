@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
+use App\Exceptions\CustomException;
+use App\Http\Middleware\DeleteBooking;
+use App\Models\Booking;
+use App\Services\BookingService;
+use App\Services\FilmService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Booking;
-use Illuminate\Http\Request;
-use App\Services\FilmService;
-use App\Services\BookingService;
-use App\Exceptions\CustomException;
-use Illuminate\Http\RedirectResponse;
-use App\Http\Middleware\DeleteBooking;
 
 class BookingController extends Controller
 {
@@ -19,12 +18,11 @@ class BookingController extends Controller
      * @var BookingService
      */
     private $bookingService;
-    
+
     /**
      * constructor
      *
-     * @param BookingService $bookingService
-     * 
+     *
      * @return void
      */
     public function __construct(BookingService $bookingService)
@@ -35,7 +33,7 @@ class BookingController extends Controller
 
     /**
      * Display a list of upcoming bookings
-     * 
+     *
      * @return Response
      */
     public function upcoming()
@@ -53,10 +51,9 @@ class BookingController extends Controller
 
     /**
      * Show the form for making a new booking
-     * 
-     * @param Request 
-     * @param int $filmId :: The id of the film to book
-     * 
+     *
+     * @param Request
+     * @param  int  $filmId :: The id of the film to book
      * @return Response
      */
     public function create(Request $request, int $filmId)
@@ -76,9 +73,8 @@ class BookingController extends Controller
 
     /**
      * Save a new booking
-     * 
-     * @param Request $request
-     * 
+     *
+     *
      * @return RedirectResponse
      */
     public function store(Request $request)
@@ -108,7 +104,7 @@ class BookingController extends Controller
 
     /**
      * List past bookings
-     * 
+     *
      * @return Response
      */
     public function past()
@@ -126,7 +122,7 @@ class BookingController extends Controller
 
     /**
      * List cancelled bookings
-     * 
+     *
      * @return Response
      */
     public function cancelled()
@@ -144,8 +140,8 @@ class BookingController extends Controller
 
     /**
      * Cancel a booking
-     * 
-     * @param Booking $booking :: The booking to be cancelled
+     *
+     * @param  Booking  $booking :: The booking to be cancelled
      */
     public function destroy(Booking $booking)
     {
@@ -153,7 +149,7 @@ class BookingController extends Controller
 
         $notification = [
             'status' => 'success',
-            'message' => 'Booking cancelled successfully!'
+            'message' => 'Booking cancelled successfully!',
         ];
 
         return redirect()->back()->with('notification', $notification);

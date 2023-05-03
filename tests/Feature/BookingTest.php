@@ -2,15 +2,15 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\Film;
-use App\Models\User;
 use App\Models\Booking;
-use App\Models\Theatre;
+use App\Models\Film;
 use App\Models\Schedule;
+use App\Models\Theatre;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use App\Traits\StringHelper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class BookingTest extends TestCase
 {
@@ -53,7 +53,7 @@ class BookingTest extends TestCase
         ]);
 
         $response->assertRedirect(RouteServiceProvider::HOME);
-        $this->assertAuthenticated();  
+        $this->assertAuthenticated();
     }
 
     public function test_authenticated_user_can_make_a_booking(): void
@@ -79,7 +79,7 @@ class BookingTest extends TestCase
 
         $response->assertRedirect('/bookings/upcoming');
         $this->assertIsArray(session()->get('notification'));
-        $this->assertEquals(session()->get('notification')['status'],'success');
+        $this->assertEquals(session()->get('notification')['status'], 'success');
         $this->assertStringContainsString('Booking successful! Your Reference number is', session()->get('notification')['message']);
         $this->assertEquals($oldNumOfBookings + 1, $newNumOfBookings);
     }
@@ -104,8 +104,8 @@ class BookingTest extends TestCase
         ]);
 
         $this->assertIsArray(session()->get('notification'));
-        $this->assertEquals(session()->get('notification')['status'],'failure');
-        $this->assertEquals(session()->get('notification')['message'],'Cannot book a schedule that has already started.');
+        $this->assertEquals(session()->get('notification')['status'], 'failure');
+        $this->assertEquals(session()->get('notification')['message'], 'Cannot book a schedule that has already started.');
 
         $newNumOfBookings = Booking::all()->count();
         $this->assertEquals($oldNumOfBookings, $newNumOfBookings);
@@ -147,7 +147,7 @@ class BookingTest extends TestCase
         $response->assertStatus(200);
     }
 
-    // TODO: refactor code that creates a booking to avoid duplication 
+    // TODO: refactor code that creates a booking to avoid duplication
     public function test_upcoming_booking_can_be_cancelled_up_to_an_hour_before(): void
     {
         $booking = $this->createBooking(now()->addHours(2));
@@ -160,8 +160,8 @@ class BookingTest extends TestCase
         $this->assertEquals($oldBookings - 1, $newBookings);
         $response->assertStatus(302);
         $this->assertIsArray(session()->get('notification'));
-        $this->assertEquals(session()->get('notification')['status'],'success');
-        $this->assertEquals(session()->get('notification')['message'],'Booking cancelled successfully!');
+        $this->assertEquals(session()->get('notification')['status'], 'success');
+        $this->assertEquals(session()->get('notification')['message'], 'Booking cancelled successfully!');
     }
 
     public function test_upcoming_booking_cannot_be_cancelled_an_hour_or_less_before_schedule(): void
@@ -177,8 +177,8 @@ class BookingTest extends TestCase
         $newBookings = Booking::all()->count();
         $this->assertEquals($oldBookings, $newBookings);
         $this->assertIsArray(session()->get('notification'));
-        $this->assertEquals(session()->get('notification')['status'],'failure');
-        $this->assertEquals(session()->get('notification')['message'],'Bookings can only be cancelled up to an hour before film time!');
+        $this->assertEquals(session()->get('notification')['status'], 'failure');
+        $this->assertEquals(session()->get('notification')['message'], 'Bookings can only be cancelled up to an hour before film time!');
     }
 
     public function test_user_cannot_cancel_others_bookings(): void
@@ -195,8 +195,8 @@ class BookingTest extends TestCase
         $newBookings = Booking::all()->count();
         $this->assertEquals($oldBookings, $newBookings);
         $this->assertIsArray(session()->get('notification'));
-        $this->assertEquals(session()->get('notification')['status'],'failure');
-        $this->assertEquals(session()->get('notification')['message'],'You are not authorized to delete this booking!');
+        $this->assertEquals(session()->get('notification')['status'], 'failure');
+        $this->assertEquals(session()->get('notification')['message'], 'You are not authorized to delete this booking!');
     }
 
     public function createBooking(string $scheduleStartTime = null, int $numOfSeats = 1): Booking
@@ -237,7 +237,7 @@ class BookingTest extends TestCase
 
         $this->assertEquals($oldNumOfBookings, $newNumOfBookings);
         $this->assertIsArray(session()->get('notification'));
-        $this->assertEquals(session()->get('notification')['status'],'failure');
-        $this->assertEquals(session()->get('notification')['message'],'Cannot book more tickets than the number of seats remaining!');
+        $this->assertEquals(session()->get('notification')['status'], 'failure');
+        $this->assertEquals(session()->get('notification')['message'], 'Cannot book more tickets than the number of seats remaining!');
     }
 }
