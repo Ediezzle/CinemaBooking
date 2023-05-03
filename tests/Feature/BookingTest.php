@@ -161,7 +161,7 @@ class BookingTest extends TestCase
         $response->assertStatus(302);
         $this->assertIsArray(session()->get('notification'));
         $this->assertEquals(session()->get('notification')['status'],'success');
-        $this->assertEquals(session()->get('notification')['message'],'Booking deleted successfully!');
+        $this->assertEquals(session()->get('notification')['message'],'Booking cancelled successfully!');
     }
 
     public function test_upcoming_booking_cannot_be_cancelled_an_hour_or_less_before_schedule(): void
