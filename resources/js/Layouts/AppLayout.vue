@@ -35,7 +35,7 @@ const logout = () => {
         <Banner />
 
         <div class="min-h-screen bg-gray-100">
-            <nav class="bg-zinc-300 border-b border-gray-100">
+            <nav v-if="$page.props.auth.user" class="bg-zinc-300 border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -300,6 +300,33 @@ const logout = () => {
                     </div>
                 </div>
             </nav>
+
+            <div v-else class="sm:top-0 p-6 text-right bg-zinc-300 min-w-screen sm:min-w-screen md:min-w-screen lg:min-w-screen xl:min-w-screen mb-10">
+                <Link 
+                    v-if="$page.props.auth.user" 
+                    :href="route('dashboard')" 
+                    class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                >
+                    Dashboard
+                </Link>
+
+                <template v-else>
+                    <Link 
+                        :href="route('login')" 
+                        class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    >
+                        Log in
+                    </Link>
+
+                    <Link 
+                        v-if="canRegister || ! $page.props.auth.user" 
+                        :href="route('register')" 
+                        class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    >
+                        Register
+                    </Link>
+                </template>
+            </div>
 
             <!-- Page Heading -->
             <header v-if="$slots.header" class="bg-white shadow">
